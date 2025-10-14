@@ -49,6 +49,27 @@ class _DashboardViewState extends State<DashboardView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: _selectedIndex == 0
+          ? AppBar(
+              title: const Text(AppStrings.dashboard),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.person),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) => const UsersListPage()));
+                  },
+                  tooltip: AppStrings.users,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: () {
+                    context.read<DashboardBloc>().add(const RefreshDashboardStatsEvent());
+                  },
+                  tooltip: AppStrings.refresh,
+                ),
+              ],
+            )
+          : null,
       drawer: const _DashboardDrawer(),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -79,146 +100,123 @@ class _DashboardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.dashboard),
-        automaticallyImplyLeading: true, // يظهر أيقونة القائمة الجانبية
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              // Navigate to users page
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const UsersListPage()));
+    return BlocBuilder<DashboardBloc, DashboardState>(
+      builder: (context, state) {
+        if (state is DashboardLoading) {
+          return const LoadingWidget(message: 'جاري تحميل الإحصائيات...');
+        } else if (state is DashboardError) {
+          return CustomErrorWidget(
+            message: state.message,
+            onRetry: () {
+              context.read<DashboardBloc>().add(const LoadDashboardStatsEvent());
             },
-            tooltip: AppStrings.users,
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
+          );
+        } else if (state is DashboardStatsLoaded) {
+          return RefreshIndicator(
+            onRefresh: () async {
               context.read<DashboardBloc>().add(const RefreshDashboardStatsEvent());
+              await Future.delayed(const Duration(seconds: 1));
             },
-            tooltip: AppStrings.refresh,
-          ),
-        ],
-      ),
-      body: BlocBuilder<DashboardBloc, DashboardState>(
-        builder: (context, state) {
-          if (state is DashboardLoading) {
-            return const LoadingWidget(message: 'جاري تحميل الإحصائيات...');
-          } else if (state is DashboardError) {
-            return CustomErrorWidget(
-              message: state.message,
-              onRetry: () {
-                context.read<DashboardBloc>().add(const LoadDashboardStatsEvent());
-              },
-            );
-          } else if (state is DashboardStatsLoaded) {
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<DashboardBloc>().add(const RefreshDashboardStatsEvent());
-                await Future.delayed(const Duration(seconds: 1));
-              },
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(AppDimensions.paddingLG),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // العنوان
-                    Text(
-                      AppStrings.overview,
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: AppDimensions.spaceLG),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(AppDimensions.paddingLG),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // العنوان
+                  Text(
+                    AppStrings.overview,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: AppDimensions.spaceLG),
 
-                    // Grid الإحصائيات
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        int crossAxisCount = 2;
-                        if (constraints.maxWidth > 900) {
-                          crossAxisCount = 3;
-                        }
-                        if (constraints.maxWidth > 1200) {
-                          crossAxisCount = 4;
-                        }
+                  // Grid الإحصائيات
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      int crossAxisCount = 2;
+                      if (constraints.maxWidth > 900) {
+                        crossAxisCount = 3;
+                      }
+                      if (constraints.maxWidth > 1200) {
+                        crossAxisCount = 4;
+                      }
 
-                        return GridView.count(
-                          crossAxisCount: crossAxisCount,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          mainAxisSpacing: AppDimensions.spaceMD,
-                          crossAxisSpacing: AppDimensions.spaceMD,
-                          childAspectRatio: 1.2,
-                          children: [
-                            StatsCardWidget(
-                              title: AppStrings.totalProducts,
-                              value: state.stats.totalProducts.toString(),
-                              icon: Icons.inventory,
-                              color: AppColors.primaryLight,
-                            ),
-                            StatsCardWidget(
-                              title: AppStrings.lowStockProducts,
-                              value: state.stats.lowStockProducts.toString(),
-                              icon: Icons.warning,
-                              color: AppColors.warning,
-                            ),
-                            StatsCardWidget(
-                              title: AppStrings.todaySales,
-                              value: state.stats.todaySales.toString(),
-                              icon: Icons.shopping_cart,
-                              color: AppColors.success,
-                            ),
-                            StatsCardWidget(
-                              title: AppStrings.todayRevenue,
-                              value: Formatters.formatCurrency(state.stats.todayRevenue),
-                              icon: Icons.attach_money,
-                              color: AppColors.secondaryLight,
-                            ),
-                            StatsCardWidget(
-                              title: AppStrings.monthlyRevenue,
-                              value: Formatters.formatCurrency(state.stats.monthlyRevenue),
-                              icon: Icons.trending_up,
-                              color: AppColors.info,
-                            ),
-                            StatsCardWidget(
-                              title: AppStrings.pendingInvoices,
-                              value: state.stats.pendingInvoices.toString(),
-                              icon: Icons.pending_actions,
-                              color: AppColors.accentLight,
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-
-                    const SizedBox(height: AppDimensions.spaceXL),
-
-                    // قسم المبيعات الأخيرة (سيتم إضافته لاحقاً)
-                    Text(
-                      AppStrings.recentSales,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: AppDimensions.spaceMD),
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppDimensions.paddingLG),
-                        child: Center(
-                          child: Text(
-                            'سيتم إضافة المبيعات الأخيرة بعد بناء Invoices Feature',
-                            style: Theme.of(context).textTheme.bodyMedium,
+                      return GridView.count(
+                        crossAxisCount: crossAxisCount,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        mainAxisSpacing: AppDimensions.spaceMD,
+                        crossAxisSpacing: AppDimensions.spaceMD,
+                        childAspectRatio: 1.2,
+                        children: [
+                          StatsCardWidget(
+                            title: AppStrings.totalProducts,
+                            value: state.stats.totalProducts.toString(),
+                            icon: Icons.inventory,
+                            color: AppColors.primaryLight,
                           ),
+                          StatsCardWidget(
+                            title: AppStrings.lowStockProducts,
+                            value: state.stats.lowStockProducts.toString(),
+                            icon: Icons.warning,
+                            color: AppColors.warning,
+                          ),
+                          StatsCardWidget(
+                            title: AppStrings.todaySales,
+                            value: state.stats.todaySales.toString(),
+                            icon: Icons.shopping_cart,
+                            color: AppColors.success,
+                          ),
+                          StatsCardWidget(
+                            title: AppStrings.todayRevenue,
+                            value: Formatters.formatCurrency(state.stats.todayRevenue),
+                            icon: Icons.attach_money,
+                            color: AppColors.secondaryLight,
+                          ),
+                          StatsCardWidget(
+                            title: AppStrings.monthlyRevenue,
+                            value: Formatters.formatCurrency(state.stats.monthlyRevenue),
+                            icon: Icons.trending_up,
+                            color: AppColors.info,
+                          ),
+                          StatsCardWidget(
+                            title: AppStrings.pendingInvoices,
+                            value: state.stats.pendingInvoices.toString(),
+                            icon: Icons.pending_actions,
+                            color: AppColors.accentLight,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: AppDimensions.spaceXL),
+
+                  // قسم المبيعات الأخيرة (سيتم إضافته لاحقاً)
+                  Text(
+                    AppStrings.recentSales,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: AppDimensions.spaceMD),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(AppDimensions.paddingLG),
+                      child: Center(
+                        child: Text(
+                          'سيتم إضافة المبيعات الأخيرة بعد بناء Invoices Feature',
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            );
-          }
+            ),
+          );
+        }
 
-          return const SizedBox.shrink();
-        },
-      ),
+        return const SizedBox.shrink();
+      },
     );
   }
 }
@@ -276,7 +274,6 @@ class _DashboardDrawer extends StatelessWidget {
             leading: const Icon(Icons.inventory),
             title: const Text(AppStrings.products),
             onTap: () {
-              debugPrint('🎯 [DashboardDrawer] Products clicked - navigating to ProductsListPage');
               Navigator.of(context).pop();
               Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProductsListPage()));
             },
