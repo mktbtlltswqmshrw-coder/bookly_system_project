@@ -1,0 +1,48 @@
+{
+  "recommendations": [
+    // ===== Flutter & Dart الأساسية =====
+    "dart-code.dart-code",
+    "dart-code.flutter",
+    
+    // ===== Git & Version Control =====
+    "eamodio.gitlens",
+    "github.vscode-pull-request-github",
+    "mhutchie.git-graph",
+    
+    // ===== Code Quality & Formatting =====
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "ms-vscode.vscode-json",
+    "redhat.vscode-yaml",
+    
+    // ===== Productivity & UI =====
+    "pkief.material-icon-theme",
+    "zhuangtongfa.material-theme",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    "ms-vscode.live-server",
+    
+    // ===== Testing & Debugging =====
+    "ms-vscode.test-adapter-converter",
+    "littlefoxteam.vscode-python-test-adapter",
+    
+    // ===== Mobile Development =====
+    "ms-vscode.vscode-android",
+    "ms-vscode.cmake-tools",
+    
+    // ===== Code Analysis =====
+    "streetsidesoftware.code-spell-checker",
+    "gruntfuggly.todo-tree",
+    "alefragnani.bookmarks",
+    
+    // ===== Documentation =====
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+    
+    // ===== Utilities =====
+    "ms-vscode.hexeditor",
+    "formulahendry.auto-close-tag",
+    "ms-vscode-remote.remote-containers",
+    "ms-vscode.remote-explorer"
+  ]
+}

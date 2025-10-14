@@ -1,0 +1,244 @@
+{
+  // ===== Flutter Widget Snippets =====
+  "Stateless Widget": {
+    "prefix": "stless",
+    "body": [
+      "class ${1:WidgetName} extends StatelessWidget {",
+      "  const ${1:WidgetName}({super.key});",
+      "",
+      "  @override",
+      "  Widget build(BuildContext context) {",
+      "    return ${2:Container}();",
+      "  }",
+      "}"
+    ],
+    "description": "Create a StatelessWidget"
+  },
+  
+  "Stateful Widget": {
+    "prefix": "stful",
+    "body": [
+      "class ${1:WidgetName} extends StatefulWidget {",
+      "  const ${1:WidgetName}({super.key});",
+      "",
+      "  @override",
+      "  State<${1:WidgetName}> createState() => _${1:WidgetName}State();",
+      "}",
+      "",
+      "class _${1:WidgetName}State extends State<${1:WidgetName}> {",
+      "  @override",
+      "  Widget build(BuildContext context) {",
+      "    return ${2:Container}();",
+      "  }",
+      "}"
+    ],
+    "description": "Create a StatefulWidget"
+  },
+
+  // ===== BLoC Snippets =====
+  "BLoC State": {
+    "prefix": "blocstate",
+    "body": [
+      "@freezed",
+      "class ${1:Feature}State with _$${1:Feature}State {",
+      "  const factory ${1:Feature}State.initial() = _Initial;",
+      "  const factory ${1:Feature}State.loading() = _Loading;", 
+      "  const factory ${1:Feature}State.loaded(${2:DataType} data) = _Loaded;",
+      "  const factory ${1:Feature}State.error(String message) = _Error;",
+      "}"
+    ],
+    "description": "Create a BLoC State with Freezed"
+  },
+  
+  "BLoC Event": {
+    "prefix": "blocevent",
+    "body": [
+      "@freezed",
+      "class ${1:Feature}Event with _$${1:Feature}Event {",
+      "  const factory ${1:Feature}Event.started() = _Started;",
+      "  const factory ${1:Feature}Event.${2:eventName}(${3:String param}) = _${2/(.*)/${1:/capitalize}/};",
+      "}"
+    ],
+    "description": "Create a BLoC Event with Freezed"
+  },
+  
+  "BLoC Class": {
+    "prefix": "blocclass",
+    "body": [
+      "class ${1:Feature}Bloc extends Bloc<${1:Feature}Event, ${1:Feature}State> {",
+      "  final ${2:Repository} _repository;",
+      "",
+      "  ${1:Feature}Bloc({required ${2:Repository} repository})",
+      "      : _repository = repository,",
+      "        super(const ${1:Feature}State.initial()) {",
+      "    on<_Started>(_onStarted);",
+      "  }",
+      "",
+      "  Future<void> _onStarted(",
+      "    _Started event,",
+      "    Emitter<${1:Feature}State> emit,",
+      "  ) async {",
+      "    emit(const ${1:Feature}State.loading());",
+      "    try {",
+      "      // Implementation here",
+      "      ${3:// Add your logic}",
+      "    } catch (e) {",
+      "      emit(${1:Feature}State.error(e.toString()));",
+      "    }",
+      "  }",
+      "}"
+    ],
+    "description": "Create a complete BLoC class"
+  },
+
+  // ===== Repository Pattern Snippets =====
+  "Repository Interface": {
+    "prefix": "repointerface",
+    "body": [
+      "abstract class ${1:Feature}Repository {",
+      "  Future<Either<Failure, ${2:ReturnType}>> ${3:methodName}(${4:String param});",
+      "}"
+    ],
+    "description": "Create a Repository interface"
+  },
+  
+  "Repository Implementation": {
+    "prefix": "repoimpl",
+    "body": [
+      "class ${1:Feature}RepositoryImpl implements ${1:Feature}Repository {",
+      "  final ${2:RemoteDataSource} _remoteDataSource;",
+      "  final ${3:LocalDataSource} _localDataSource;",
+      "  final NetworkInfo _networkInfo;",
+      "",
+      "  ${1:Feature}RepositoryImpl({",
+      "    required ${2:RemoteDataSource} remoteDataSource,",
+      "    required ${3:LocalDataSource} localDataSource,",
+      "    required NetworkInfo networkInfo,",
+      "  }) : _remoteDataSource = remoteDataSource,",
+      "       _localDataSource = localDataSource,", 
+      "       _networkInfo = networkInfo;",
+      "",
+      "  @override",
+      "  Future<Either<Failure, ${4:ReturnType}>> ${5:methodName}(${6:String param}) async {",
+      "    if (await _networkInfo.isConnected) {",
+      "      try {",
+      "        final result = await _remoteDataSource.${5:methodName}(${6:param});",
+      "        return Right(result);",
+      "      } on ServerException {",
+      "        return Left(ServerFailure());",
+      "      }",
+      "    } else {",
+      "      return Left(NetworkFailure());",
+      "    }",
+      "  }",
+      "}"
+    ],
+    "description": "Create a Repository implementation"
+  },
+
+  // ===== UseCase Snippets =====
+  "UseCase": {
+    "prefix": "usecase",
+    "body": [
+      "class ${1:Action}UseCase implements UseCase<${2:ReturnType}, ${3:Params}> {",
+      "  final ${4:Repository} repository;",
+      "",
+      "  ${1:Action}UseCase(this.repository);",
+      "",
+      "  @override",
+      "  Future<Either<Failure, ${2:ReturnType}>> call(${3:Params} params) async {",
+      "    return await repository.${5:methodName}(params);",
+      "  }",
+      "}"
+    ],
+    "description": "Create a UseCase class"
+  },
+
+  // ===== Model Snippets =====
+  "Data Model": {
+    "prefix": "datamodel",
+    "body": [
+      "@freezed",
+      "class ${1:ModelName} with _$${1:ModelName} {",
+      "  const factory ${1:ModelName}({",
+      "    required ${2:String} ${3:field},",
+      "  }) = _${1:ModelName};",
+      "",
+      "  factory ${1:ModelName}.fromJson(Map<String, dynamic> json) =>",
+      "      _$${1:ModelName}FromJson(json);",
+      "}"
+    ],
+    "description": "Create a data model with Freezed"
+  },
+
+  // ===== UI Snippets =====
+  "Responsive Layout": {
+    "prefix": "responsive",
+    "body": [
+      "LayoutBuilder(",
+      "  builder: (context, constraints) {",
+      "    if (constraints.maxWidth >= 1100) {",
+      "      return ${1:DesktopLayout}();",
+      "    } else if (constraints.maxWidth > 800) {",
+      "      return ${2:TabletLayout}();", 
+      "    } else {",
+      "      return ${3:MobileLayout}();",
+      "    }",
+      "  },",
+      ")"
+    ],
+    "description": "Create responsive layout"
+  },
+  
+  "BlocBuilder": {
+    "prefix": "blocbuilder",
+    "body": [
+      "BlocBuilder<${1:Bloc}, ${2:State}>(",
+      "  builder: (context, state) {",
+      "    return state.when(",
+      "      initial: () => const SizedBox(),",
+      "      loading: () => const CircularProgressIndicator(),",
+      "      loaded: (data) => ${3:Widget}(data: data),",
+      "      error: (message) => Text('Error: \\$message'),",
+      "    );",
+      "  },",
+      ")"
+    ],
+    "description": "Create BlocBuilder with state handling"
+  },
+
+  // ===== Test Snippets =====
+  "Widget Test": {
+    "prefix": "widgettest",
+    "body": [
+      "testWidgets('${1:description}', (WidgetTester tester) async {",
+      "  // Arrange",
+      "  ${2:// Setup}",
+      "",
+      "  // Act",
+      "  await tester.pumpWidget(${3:MaterialApp(home: Widget())});",
+      "",
+      "  // Assert",
+      "  expect(find.${4:text}('${5:expected}'), findsOneWidget);",
+      "});"
+    ],
+    "description": "Create a widget test"
+  },
+  
+  "Unit Test": {
+    "prefix": "unittest",
+    "body": [
+      "test('${1:description}', () async {",
+      "  // Arrange",
+      "  ${2:// Setup}",
+      "",
+      "  // Act",
+      "  ${3:// Execute}",
+      "",
+      "  // Assert",
+      "  expect(${4:actual}, ${5:expected});",
+      "});"
+    ],
+    "description": "Create a unit test"
+  }
+} 

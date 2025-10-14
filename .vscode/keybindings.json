@@ -1,0 +1,98 @@
+[
+  // ===== Flutter Specific Shortcuts =====
+  {
+    "key": "ctrl+shift+f5",
+    "command": "dart.hotReload",
+    "when": "inDebugMode && resourceExtname == '.dart'"
+  },
+  {
+    "key": "ctrl+shift+f6", 
+    "command": "dart.hotRestart",
+    "when": "inDebugMode && resourceExtname == '.dart'"
+  },
+  {
+    "key": "ctrl+shift+d",
+    "command": "dart.openDevTools",
+    "when": "inDebugMode"
+  },
+  {
+    "key": "ctrl+shift+p",
+    "command": "flutter.selectDevice"
+  },
+  
+  // ===== Code Generation Shortcuts =====
+  {
+    "key": "ctrl+shift+g",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🏗️ Build Runner - Generate"
+  },
+  {
+    "key": "ctrl+shift+w",
+    "command": "workbench.action.tasks.runTask", 
+    "args": "👀 Build Runner - Watch"
+  },
+  
+  // ===== Testing Shortcuts =====
+  {
+    "key": "ctrl+shift+t",
+    "command": "dart.runAllTests"
+  },
+  {
+    "key": "ctrl+shift+r",
+    "command": "dart.runTestsInCurrentFile",
+    "when": "resourceExtname == '.dart'"
+  },
+  
+  // ===== Build Shortcuts =====
+  {
+    "key": "ctrl+shift+b",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🔄 Full Clean & Rebuild"
+  },
+  {
+    "key": "ctrl+shift+a",
+    "command": "workbench.action.tasks.runTask",
+    "args": "🔍 Flutter Analyze"
+  },
+  
+  // ===== Navigation Shortcuts =====
+  {
+    "key": "ctrl+shift+o",
+    "command": "dart.goToDeclaration",
+    "when": "editorTextFocus && resourceExtname == '.dart'"
+  },
+  {
+    "key": "ctrl+shift+u",
+    "command": "dart.goToReferences",
+    "when": "editorTextFocus && resourceExtname == '.dart'"
+  },
+  
+  // ===== Widget Wrapping Shortcuts =====
+  {
+    "key": "ctrl+shift+w",
+    "command": "dart.assist.wrap.widget",
+    "when": "editorTextFocus && resourceExtname == '.dart'"
+  },
+  {
+    "key": "ctrl+shift+c",
+    "command": "dart.assist.wrap.center",
+    "when": "editorTextFocus && resourceExtname == '.dart'"
+  },
+  {
+    "key": "ctrl+shift+s",
+    "command": "dart.assist.wrap.safeArea",
+    "when": "editorTextFocus && resourceExtname == '.dart'"
+  },
+  
+  // ===== Code Actions =====
+  {
+    "key": "ctrl+.",
+    "command": "editor.action.quickFix",
+    "when": "editorHasCodeActionsProvider && textInputFocus && !editorReadonly"
+  },
+  {
+    "key": "ctrl+shift+.",
+    "command": "editor.action.sourceAction",
+    "when": "editorHasCodeActionsProvider && textInputFocus && !editorReadonly"
+  }
+] 

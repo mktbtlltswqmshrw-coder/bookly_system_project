@@ -1,0 +1,41 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## **1. Divide Code into Files and Subfolders:**
+- Code must be divided into subfiles and subfolders, with each module or component in a separate file.
+- Each file must be dedicated to a specific function or module (Single Responsibility Principle).
+
+## **2. File Size Limits:**
+- No file should exceed **1,000 lines of code**.
+- If the code exceeds this limit, divide it into smaller files according to the functions or modules.
+
+## **3. Use the Latest Programming Technologies:**
+- Code must be written using the **latest programming technologies and methods** available in 2025.
+- Adhere to modern standards such as:
+- Use Object-Oriented Programming (OOP) or Functional Programming (FOP) as needed.
+- Manage State using modern solutions such as **State Management**.
+
+## **4. Clean Code:**
+- The code should be:
+- **Parted and structured** in a clear and readable manner.
+- Free of repetition (DRY - Don't Repeat Yourself).
+- Contain only necessary comments to clarify complex parts.
+
+## **5. Clear and Consistent Naming:**
+- The names of files, classes, functions, and variables should be clear and descriptive.
+- Use **CamelCase** or **snake_case** according to the project's standards.
+
+## **6. System Compatibility:**
+- The code should be compatible with the target platforms (e.g., web, mobile, or desktop).
+- The design of the software modules should be responsive and support multiple platforms.
+
+## **7. Verification and Documentation:**
+- The code should be verified using **Unit Testing** and **Integration Testing**.
+- Document all functions and modules using structured comments or documentation generators such as **Doxygen** or **JSDoc**.
+
+---
+### **Additional Notes:**
+- These rules must be adhered to to ensure an organized and scalable architecture.
+- The rules can be modified according to the needs of the project.

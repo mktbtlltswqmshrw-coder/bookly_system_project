@@ -1,0 +1,66 @@
+name: bookly_system
+description: "نظام إدارة مكتبة شامل"
+publish_to: 'none'
+version: 1.0.0
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  
+  # State Management
+  flutter_bloc: ^8.1.6
+  equatable: ^2.0.5
+  
+  # Functional Programming
+  dartz: ^0.10.1
+  
+  # Code Generation
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+  
+  # Dependency Injection
+  get_it: ^8.0.2
+  injectable: ^2.5.0
+  
+  # Backend (Supabase)
+  supabase_flutter: ^2.9.1
+  
+  # UI Components
+  flutter_svg: ^2.0.10
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
+  
+  # Charts & Reports
+  fl_chart: ^0.69.2
+  pdf: ^3.11.1
+  printing: ^5.13.4
+  
+  # Utilities
+  intl: ^0.20.2
+  uuid: ^4.5.1
+  connectivity_plus: ^6.1.1
+  image_picker: ^1.1.2
+  shared_preferences: ^2.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.13
+  freezed: ^2.5.7
+  json_serializable: ^6.8.0
+  injectable_generator: ^2.6.2
+  mockito: ^5.4.4
+
+flutter:
+  uses-material-design: true
+  
+  # Assets
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/
