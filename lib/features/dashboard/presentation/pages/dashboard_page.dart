@@ -82,6 +82,7 @@ class _DashboardContent extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(AppStrings.dashboard),
+        automaticallyImplyLeading: true, // يظهر أيقونة القائمة الجانبية
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
@@ -267,16 +268,17 @@ class _DashboardDrawer extends StatelessWidget {
             leading: const Icon(Icons.category),
             title: const Text(AppStrings.categories),
             onTap: () {
-              // TODO: Navigate to categories
               Navigator.of(context).pop();
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const CategoriesListPage()));
             },
           ),
           ListTile(
             leading: const Icon(Icons.inventory),
             title: const Text(AppStrings.products),
             onTap: () {
-              // TODO: Navigate to products
+              debugPrint('🎯 [DashboardDrawer] Products clicked - navigating to ProductsListPage');
               Navigator.of(context).pop();
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProductsListPage()));
             },
           ),
           ListTile(
