@@ -18,8 +18,18 @@ class ProductsListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('🏗️ [ProductsListPage] Building ProductsListPage');
+    debugPrint('🏗️ [ProductsListPage] Creating BlocProvider with ProductsBloc');
+    debugPrint('🏗️ [ProductsListPage] Adding LoadProductsEvent to trigger initial load');
+
     return BlocProvider(
-      create: (_) => getIt<ProductsBloc>()..add(LoadProductsEvent()),
+      create: (_) {
+        debugPrint('🏗️ [ProductsListPage] Creating new ProductsBloc instance');
+        final bloc = getIt<ProductsBloc>();
+        debugPrint('🏗️ [ProductsListPage] Adding LoadProductsEvent to the bloc');
+        bloc.add(LoadProductsEvent());
+        return bloc;
+      },
       child: const ProductsListView(),
     );
   }
@@ -101,17 +111,24 @@ class _ProductsListViewState extends State<ProductsListView> {
           Expanded(
             child: BlocBuilder<ProductsBloc, ProductsState>(
               builder: (context, state) {
+                debugPrint('🎨 [ProductsListView] BlocBuilder rebuilding with state: ${state.runtimeType}');
+
                 if (state is ProductsLoading) {
+                  debugPrint('⏳ [ProductsListView] Displaying loading state');
                   return const LoadingWidget(message: 'جاري تحميل المنتجات...');
                 } else if (state is ProductsError) {
+                  debugPrint('❌ [ProductsListView] Displaying error state: ${state.message}');
                   return CustomErrorWidget(
                     message: state.message,
                     onRetry: () {
+                      debugPrint('🔄 [ProductsListView] Retry button pressed, triggering LoadProductsEvent');
                       context.read<ProductsBloc>().add(LoadProductsEvent());
                     },
                   );
                 } else if (state is ProductsLoaded) {
+                  debugPrint('✅ [ProductsListView] Displaying loaded state with ${state.products.length} products');
                   if (state.products.isEmpty) {
+                    debugPrint('📭 [ProductsListView] Products list is empty, showing empty state');
                     return const EmptyStateWidget(message: 'لا توجد منتجات', icon: Icons.inventory);
                   }
                   return RefreshIndicator(

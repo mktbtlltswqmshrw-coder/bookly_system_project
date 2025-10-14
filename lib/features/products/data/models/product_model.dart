@@ -1,4 +1,5 @@
 import 'package:bookly_system/features/products/domain/entities/product_entity.dart';
+import 'package:flutter/material.dart';
 
 /// نموذج المنتج - Data Model
 class ProductModel extends ProductEntity {
@@ -26,27 +27,39 @@ class ProductModel extends ProductEntity {
 
   /// من JSON
   factory ProductModel.fromJson(Map<String, dynamic> json) {
-    return ProductModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      nameAr: json['name_ar'] as String,
-      description: json['description'] as String?,
-      categoryId: json['category_id'] as String?,
-      sku: json['sku'] as String?,
-      barcode: json['barcode'] as String?,
-      unit: json['unit'] as String? ?? 'قطعة',
-      costPrice: (json['cost_price'] as num?)?.toDouble() ?? 0.0,
-      sellingPrice: (json['selling_price'] as num).toDouble(),
-      minStockLevel: json['min_stock_level'] as int? ?? 0,
-      currentStock: json['current_stock'] as int? ?? 0,
-      imageUrl: json['image_url'] as String?,
-      supplierId: json['supplier_id'] as String?,
-      isActive: json['is_active'] as bool? ?? true,
-      createdBy: json['created_by'] as String?,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
-      isDeleted: json['is_deleted'] as bool? ?? false,
-    );
+    try {
+      debugPrint('🔄 [ProductModel] Converting JSON to ProductModel');
+      debugPrint('📄 [ProductModel] JSON data: $json');
+
+      final product = ProductModel(
+        id: json['id'] as String,
+        name: json['name'] as String,
+        nameAr: json['name_ar'] as String,
+        description: json['description'] as String?,
+        categoryId: json['category_id'] as String?,
+        sku: json['sku'] as String?,
+        barcode: json['barcode'] as String?,
+        unit: json['unit'] as String? ?? 'قطعة',
+        costPrice: (json['cost_price'] as num?)?.toDouble() ?? 0.0,
+        sellingPrice: (json['selling_price'] as num).toDouble(),
+        minStockLevel: json['min_stock_level'] as int? ?? 0,
+        currentStock: json['current_stock'] as int? ?? 0,
+        imageUrl: json['image_url'] as String?,
+        supplierId: json['supplier_id'] as String?,
+        isActive: json['is_active'] as bool? ?? true,
+        createdBy: json['created_by'] as String?,
+        createdAt: DateTime.parse(json['created_at'] as String),
+        updatedAt: DateTime.parse(json['updated_at'] as String),
+        isDeleted: json['is_deleted'] as bool? ?? false,
+      );
+
+      debugPrint('✅ [ProductModel] Successfully created ProductModel: ${product.nameAr}');
+      return product;
+    } catch (e, stackTrace) {
+      debugPrint('❌ [ProductModel] Error converting JSON to ProductModel: $e');
+      debugPrint('📍 [ProductModel] Stack trace: $stackTrace');
+      rethrow;
+    }
   }
 
   /// إلى JSON

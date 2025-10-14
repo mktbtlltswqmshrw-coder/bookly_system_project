@@ -1,6 +1,7 @@
 import 'package:bookly_system/core/error/exceptions.dart';
 import 'package:bookly_system/core/network/supabase_client.dart';
 import 'package:bookly_system/features/categories/data/models/category_model.dart';
+import 'package:flutter/material.dart';
 
 /// واجهة مصدر البيانات البعيد للفئات
 abstract class CategoriesRemoteDataSource {
@@ -44,9 +45,11 @@ class CategoriesRemoteDataSourceImpl implements CategoriesRemoteDataSource {
 
       final response = await query;
       final responseList = response as List;
-      print('🔍 Categories Response Type: ${response.runtimeType}');
-      print('🔍 Categories Response Length: ${responseList.length}');
-      print('🔍 Categories First Item Type: ${responseList.isNotEmpty ? responseList.first.runtimeType : "empty"}');
+      debugPrint('🔍 Categories Response Type: ${response.runtimeType}');
+      debugPrint('🔍 Categories Response Length: ${responseList.length}');
+      debugPrint(
+        '🔍 Categories First Item Type: ${responseList.isNotEmpty ? responseList.first.runtimeType : "empty"}',
+      );
       return responseList.map((json) => CategoryModel.fromJson(json as Map<String, dynamic>)).toList();
     } catch (e) {
       throw ServerException('فشل في جلب الفئات: $e');

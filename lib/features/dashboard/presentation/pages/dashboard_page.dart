@@ -53,7 +53,12 @@ class _DashboardViewState extends State<DashboardView> {
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        onTap: (index) => setState(() => _selectedIndex = index),
+        onTap: (index) {
+          debugPrint('🎯 [DashboardPage] Bottom navigation tapped: $index');
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),

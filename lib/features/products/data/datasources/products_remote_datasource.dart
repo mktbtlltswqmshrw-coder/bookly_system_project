@@ -1,6 +1,7 @@
 import 'package:bookly_system/core/error/exceptions.dart';
 import 'package:bookly_system/core/network/supabase_client.dart';
 import 'package:bookly_system/features/products/data/models/product_model.dart';
+import 'package:flutter/material.dart';
 
 /// واجهة مصدر البيانات البعيد للمنتجات
 abstract class ProductsRemoteDataSource {
@@ -32,19 +33,39 @@ class ProductsRemoteDataSourceImpl implements ProductsRemoteDataSource {
     int? limit,
     int? offset,
   }) async {
+    debugPrint('🚀 [ProductsDataSource] Starting getProducts call');
+    debugPrint(
+      '📋 [ProductsDataSource] Parameters: categoryId=$categoryId, searchQuery=$searchQuery, isActive=$isActive, limit=$limit, offset=$offset',
+    );
+
     try {
+      debugPrint('🔗 [ProductsDataSource] Connecting to Supabase...');
+
+      // اختبار بسيط للتحقق من وجود الجدول
+      debugPrint('🔍 [ProductsDataSource] Testing table access...');
+      try {
+        final testQuery = SupabaseClientService.instance.from('products').select('count').limit(1);
+        await testQuery;
+        debugPrint('✅ [ProductsDataSource] Table access successful');
+      } catch (e) {
+        debugPrint('❌ [ProductsDataSource] Table access failed: $e');
+      }
+
       dynamic query = SupabaseClientService.instance.from('products').select().eq('is_deleted', false);
 
       // تطبيق الفلاتر
       if (categoryId != null) {
+        debugPrint('🔍 [ProductsDataSource] Applying category filter: $categoryId');
         query = query.eq('category_id', categoryId);
       }
 
       if (isActive != null) {
+        debugPrint('🔍 [ProductsDataSource] Applying active filter: $isActive');
         query = query.eq('is_active', isActive);
       }
 
       if (searchQuery != null && searchQuery.isNotEmpty) {
+        debugPrint('🔍 [ProductsDataSource] Applying search filter: $searchQuery');
         query = query.or('name.ilike.%$searchQuery%,name_ar.ilike.%$searchQuery%,sku.ilike.%$searchQuery%');
       }
 
@@ -52,20 +73,48 @@ class ProductsRemoteDataSourceImpl implements ProductsRemoteDataSource {
       query = query.order('created_at', ascending: false);
 
       if (limit != null) {
+        debugPrint('🔍 [ProductsDataSource] Applying limit: $limit');
         query = query.limit(limit);
       }
 
       if (offset != null) {
+        debugPrint('🔍 [ProductsDataSource] Applying offset: $offset');
         query = query.range(offset, offset + (limit ?? 50) - 1);
       }
 
-      final response = await query;
-      final responseList = response as List;
-      print('🔍 Products Response Type: ${response.runtimeType}');
-      print('🔍 Products Response Length: ${responseList.length}');
-      print('🔍 Products First Item Type: ${responseList.isNotEmpty ? responseList.first.runtimeType : "empty"}');
-      return responseList.map((json) => ProductModel.fromJson(json as Map<String, dynamic>)).toList();
-    } catch (e) {
+      debugPrint('📡 [ProductsDataSource] Executing Supabase query...');
+
+      try {
+        final response = await query;
+        debugPrint('✅ [ProductsDataSource] Supabase query completed');
+        final responseList = response as List;
+
+        debugPrint('✅ [ProductsDataSource] Query executed successfully!');
+        debugPrint('🔍 Products Response Type: ${response.runtimeType}');
+        debugPrint('🔍 Products Response Length: ${responseList.length}');
+        debugPrint(
+          '🔍 Products First Item Type: ${responseList.isNotEmpty ? responseList.first.runtimeType : "empty"}',
+        );
+
+        if (responseList.isNotEmpty) {
+          debugPrint('📄 [ProductsDataSource] First product data: ${responseList.first}');
+        } else {
+          debugPrint('⚠️ [ProductsDataSource] No products found in database');
+        }
+
+        debugPrint('🔄 [ProductsDataSource] Converting to ProductModel...');
+        final products = responseList.map((json) => ProductModel.fromJson(json as Map<String, dynamic>)).toList();
+        debugPrint('✅ [ProductsDataSource] Successfully converted ${products.length} products');
+
+        return products;
+      } catch (e, stackTrace) {
+        debugPrint('❌ [ProductsDataSource] Supabase query failed: $e');
+        debugPrint('📍 [ProductsDataSource] Stack trace: $stackTrace');
+        rethrow;
+      }
+    } catch (e, stackTrace) {
+      debugPrint('❌ [ProductsDataSource] Error occurred: $e');
+      debugPrint('📍 [ProductsDataSource] Stack trace: $stackTrace');
       throw ServerException('فشل في جلب المنتجات: $e');
     }
   }

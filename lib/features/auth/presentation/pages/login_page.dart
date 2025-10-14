@@ -56,7 +56,7 @@ class _LoginViewState extends State<LoginView> {
             AppNotification.showSuccess(context, 'تم تسجيل الدخول بنجاح');
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const DashboardPage()));
           } else if (state is AuthError) {
-            print('🔴 Login Error: ${state.message}'); // إضافة debugging
+            debugPrint('🔴 Login Error: ${state.message}'); // إضافة debugging
             AppNotification.showError(context, state.message);
           }
         },

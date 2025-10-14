@@ -2,6 +2,7 @@ import 'package:bookly_system/core/usecases/usecase.dart';
 import 'package:bookly_system/features/products/domain/usecases/get_products_usecase.dart';
 import 'package:bookly_system/features/products/presentation/bloc/products_event.dart';
 import 'package:bookly_system/features/products/presentation/bloc/products_state.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Bloc للمنتجات
@@ -38,13 +39,32 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
   /// معالج تحميل المنتجات
   Future<void> _onLoadProducts(LoadProductsEvent event, Emitter<ProductsState> emit) async {
+    debugPrint('🎯 [ProductsBloc] LoadProductsEvent received');
+    debugPrint(
+      '📋 [ProductsBloc] Event parameters: categoryId=${event.categoryId}, searchQuery=${event.searchQuery}, isActive=${event.isActive}',
+    );
+
+    debugPrint('📤 [ProductsBloc] Emitting ProductsLoading state');
     emit(const ProductsLoading());
 
+    debugPrint('🔄 [ProductsBloc] Calling getProductsUseCase...');
     final result = await getProductsUseCase(
       GetProductsParams(categoryId: event.categoryId, searchQuery: event.searchQuery, isActive: event.isActive),
     );
 
-    result.fold((failure) => emit(ProductsError(failure.message)), (products) => emit(ProductsLoaded(products)));
+    debugPrint('📥 [ProductsBloc] UseCase result received');
+    result.fold(
+      (failure) {
+        debugPrint('❌ [ProductsBloc] UseCase returned failure: ${failure.message}');
+        debugPrint('📤 [ProductsBloc] Emitting ProductsError state');
+        emit(ProductsError(failure.message));
+      },
+      (products) {
+        debugPrint('✅ [ProductsBloc] UseCase returned ${products.length} products');
+        debugPrint('📤 [ProductsBloc] Emitting ProductsLoaded state');
+        emit(ProductsLoaded(products));
+      },
+    );
   }
 
   /// معالج تحديث المنتجات

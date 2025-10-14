@@ -1,17 +1,22 @@
 import 'package:bookly_system/core/constants/app_strings.dart';
 import 'package:bookly_system/core/di/injection_container.dart';
 import 'package:bookly_system/core/theme/app_theme.dart';
+import 'package:bookly_system/core/utils/bloc_observer.dart';
 import 'package:bookly_system/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:bookly_system/features/auth/presentation/pages/login_page.dart';
 import 'package:bookly_system/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   // التأكد من تهيئة Flutter
   WidgetsFlutterBinding.ensureInitialized();
+
+  // تفعيل BlocObserver لتتبع جميع Events و States
+  Bloc.observer = AppBlocObserver();
 
   // تعيين اتجاه النص RTL للعربية
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);

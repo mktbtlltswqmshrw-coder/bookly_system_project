@@ -5,6 +5,7 @@ import 'package:bookly_system/features/products/data/datasources/products_remote
 import 'package:bookly_system/features/products/domain/entities/product_entity.dart';
 import 'package:bookly_system/features/products/domain/repositories/products_repository.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 
 /// تنفيذ مستودع المنتجات
 class ProductsRepositoryImpl implements ProductsRepository {
@@ -21,7 +22,17 @@ class ProductsRepositoryImpl implements ProductsRepository {
     int? limit,
     int? offset,
   }) async {
-    if (await networkInfo.isConnected) {
+    debugPrint('🏪 [ProductsRepository] Starting getProducts call');
+    debugPrint(
+      '📋 [ProductsRepository] Parameters: categoryId=$categoryId, searchQuery=$searchQuery, isActive=$isActive, limit=$limit, offset=$offset',
+    );
+
+    debugPrint('🌐 [ProductsRepository] Checking network connectivity...');
+    final isConnected = await networkInfo.isConnected;
+    debugPrint('🌐 [ProductsRepository] Network status: $isConnected');
+
+    if (isConnected) {
+      debugPrint('✅ [ProductsRepository] Network connected, calling remote data source...');
       try {
         final products = await remoteDataSource.getProducts(
           categoryId: categoryId,
@@ -30,11 +41,18 @@ class ProductsRepositoryImpl implements ProductsRepository {
           limit: limit,
           offset: offset,
         );
+        debugPrint('✅ [ProductsRepository] Successfully received ${products.length} products from data source');
         return Right(products.map((model) => model as ProductEntity).toList());
       } on ServerException catch (e) {
+        debugPrint('❌ [ProductsRepository] ServerException caught: ${e.message}');
         return Left(ServerFailure(e.message));
+      } catch (e, stackTrace) {
+        debugPrint('❌ [ProductsRepository] Unexpected error: $e');
+        debugPrint('📍 [ProductsRepository] Stack trace: $stackTrace');
+        return Left(ServerFailure('خطأ غير متوقع: $e'));
       }
     } else {
+      debugPrint('❌ [ProductsRepository] No network connection');
       return const Left(NetworkFailure('لا يوجد اتصال بالإنترنت'));
     }
   }

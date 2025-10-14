@@ -3,6 +3,7 @@ import 'package:bookly_system/core/network/supabase_client.dart';
 import 'package:bookly_system/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:bookly_system/features/auth/data/models/user_model.dart';
 import 'package:bookly_system/features/auth/domain/entities/user_entity.dart';
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
 
 /// واجهة مصدر البيانات البعيد للمصادقة
@@ -33,7 +34,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel> login({required String email, required String password}) async {
     try {
-      print('🔐 محاولة تسجيل الدخول: $email');
+      debugPrint('🔐 محاولة تسجيل الدخول: $email');
 
       // البحث عن المستخدم بالبريد وكلمة المرور
       final response = await supabase
@@ -44,7 +45,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           .eq('is_active', true)
           .single();
 
-      print('✅ تم العثور على المستخدم: ${response['full_name']}');
+      debugPrint('✅ تم العثور على المستخدم: ${response['full_name']}');
 
       final userModel = _mapToUserModel(response);
 
@@ -53,7 +54,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       return userModel;
     } catch (e) {
-      print('❌ Error: $e');
+      debugPrint('❌ Error: $e');
       throw AuthException('البريد الإلكتروني أو كلمة المرور غير صحيحة');
     }
   }
@@ -63,7 +64,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       // مسح الجلسة المحلية
       await localDataSource.clearUserSession();
-      print('✅ تم تسجيل الخروج');
+      debugPrint('✅ تم تسجيل الخروج');
     } catch (e) {
       throw AuthException('حدث خطأ في تسجيل الخروج: $e');
     }
